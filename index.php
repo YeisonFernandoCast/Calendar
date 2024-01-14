@@ -159,6 +159,12 @@
         $('.clockpicker').clockpicker();
 
         let calend = new FullCalendar.Calendar(document.getElementById('calendar1'),{
+            headerToolbar:{
+               left: 'prev,next,today',
+               center: 'title',
+               right: 'dayGridMonth, timeGridWeek, timeGridDay'
+            },
+            editable: true,
             events: 'dataEvents.php?action=list',
             dateClick: function(info){
                 console.log(info);
@@ -195,7 +201,7 @@
                 $('#id').val(info.event.id);
                 $('#titulo').val(info.event.title);
                 $('#descripcion').val(info.event.extendedProps.description); 
-                 console.log('info.event:', info.event); 
+                //console.log('info.event:', info.event); 
 
 
                 // Utiliza moment.js para formatear la fecha
@@ -205,6 +211,22 @@
                 $('#horaFin').val(moment(info.event.extendedProps.end_date).format("HH:mm"));
                 $('#colorTexto').val(info.event.extendedProps.text_color);
                 $('#colorFondo').val(info.event.extendedProps.background_color);
+            },
+
+            eventDrop: function(info){
+                $('#id').val(info.event.id);
+                $('#titulo').val(info.event.title);
+                $('#descripcion').val(info.event.extendedProps.description); 
+                $('#fechaInicio').val(moment(info.event.start).format("YYYY-MM-DD"));
+                $('#fechaFin').val(moment(info.event.extendedProps.end_date).format("YYYY-MM-DD"));
+                $('#horaInicio').val(moment(info.event.start).format("HH:mm"));
+                $('#horaFin').val(moment(info.event.extendedProps.end_date).format("HH:mm"));
+                $('#colorTexto').val(info.event.extendedProps.text_color);
+                $('#colorFondo').val(info.event.extendedProps.background_color); 
+
+                let registro = getFormData();
+                editEvent(registro);
+
             }
         });
 
