@@ -306,6 +306,13 @@
             
         });
 
+        
+        $('#botonEventoPredefinido').click(function(){
+            //alert("predef");
+            window.location = "eventPredef.html";       
+            
+        });
+
 
         /* Función para comunicarse con Ajax*/
         function addEvent(registro){
