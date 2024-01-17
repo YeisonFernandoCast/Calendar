@@ -25,11 +25,7 @@
 
     <div class="container-fluid">
         <section class="content-header">
-            <h1>
-                Yefer
-                <small>My calendar</small>
-            </h1>
-            
+            <h2><small>Yefer's calendar</small></h2>    
         </section>
         <div class="row">
             <div class="col-10">
@@ -156,9 +152,23 @@
 
     <script>
 
+    document.addEventListener("DOMContentLoaded", function(){
+
+        new FullCalendar.Draggable(document.getElementById('listaEventoPredefinido'),{
+            itemSelector: '.fc-event',
+            eventData: function(eventEl){
+                return{
+                    title: eventEl.innerText.trim()
+                }
+            }
+        });
+
+        
         $('.clockpicker').clockpicker();
 
         let calend = new FullCalendar.Calendar(document.getElementById('calendar1'),{
+            droppable: true,
+            height: 780,
             headerToolbar:{
                left: 'prev,next,today',
                center: 'title',
@@ -211,6 +221,22 @@
                 $('#horaFin').val(moment(info.event.extendedProps.end_date).format("HH:mm"));
                 $('#colorTexto').val(info.event.extendedProps.text_color);
                 $('#colorFondo').val(info.event.extendedProps.background_color);
+                
+            },
+
+            eventResize: function(info){
+                $('#id').val(info.event.id);
+                $('#titulo').val(info.event.title);
+                $('#descripcion').val(info.event.extendedProps.description); 
+                $('#fechaInicio').val(moment(info.event.start).format("YYYY-MM-DD"));
+                $('#fechaFin').val(moment(info.event.extendedProps.end_date).format("YYYY-MM-DD"));
+                $('#horaInicio').val(moment(info.event.start).format("HH:mm"));
+                $('#horaFin').val(moment(info.event.extendedProps.end_date).format("HH:mm"));
+                $('#colorTexto').val(info.event.extendedProps.text_color);
+                $('#colorFondo').val(info.event.extendedProps.background_color); 
+
+                let registro = getFormData();
+                editEvent(registro);
             },
 
             eventDrop: function(info){
@@ -227,7 +253,29 @@
                 let registro = getFormData();
                 editEvent(registro);
 
+            },
+            drop: function(info){
+            //alert ("Hello")
+            clearForm();
+            $('#colorTexto').val(info.draggedEl.dataset.text_color);
+            $('#colorFondo').val(info.draggedEl.dataset.background_color);
+            $('#titulo').val(info.draggedEl.dataset.name); 
+            let fechaHora = info.dateStr.split("T");
+            $('#fechaInicio').val(fechaHora[0]);
+            $('#fechaFin').val(fechaHora[0]);
+
+            if (info.allDay) {
+                $('#horaInicio').val(info.draggedEl.dataset.start_date);
+                $('#horaFin').val(info.draggedEl.dataset.end_date);
+            } else {
+                $('#horaInicio').val(fechaHora[1].substring(0,5));
+                $('#horaFin').val(moment(fechaHora[1].substring(0,5)).add(1, 'hours'));
             }
+            let registro = getFormData();
+            addEventPredef(registro);
+
+        }
+
         });
 
         calend.render();
@@ -309,7 +357,22 @@
                 console.log("Error lanzado:", errorThrown);
                 console.log("Respuesta del servidor:", jqXHR.responseText);
 
-                alert("Error al eliminar el evento. Consulta la consola para más detalles.");
+                alert("Error al eliminar el evento" + error);
+                }
+            });
+        }
+
+        function addEventPredef(registro) {
+            $.ajax({
+                type: 'POST',
+                url: 'dataEvents.php?action=add',
+                data: registro,
+                success: function(msg) {
+                    calend.removeAllEvents();
+                    calend.refetchEvents();
+                },
+                error: function(error) {
+                alert("Error al agregar evento predefinido al calendario" + error);
                 }
             });
         }
@@ -344,7 +407,7 @@
             return (registro);
         } 
 
-
+    });
     </script>
 </body>
 </html>
