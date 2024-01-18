@@ -20,6 +20,41 @@
    
 </head>
 <body>
-    <h2>Yefer</h2>
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h2 style="text-align: center;">Admin of predef events</h2>
+                <table class="table table-striped table-bordered table-hover" style="text-align: center;" id="table1">
+                    <thead>
+                        <tr>
+                            <td>Event</td>
+                            <td>Title</td>
+                            <td>Text Color</td>
+                            <td>Background Color</td>
+                            <td>Start Date</td>
+                            <td>End Date</td>
+                            <td>Delete</td>
+                        </tr>
+                    </table>
+                </thead>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        document-addEventListener('DOMContentLoaded', function(){
+
+            let table1 = $('#table1').DataTable({
+              "ajax":{
+                 url: 'dataEventsPredef.php?action=list',
+                 dataSrc: "",
+                 
+              }  
+            })
+        })
+
+    </script>
+
 </body>
 </html>
