@@ -33,10 +33,62 @@
                             <td>Background Color</td>
                             <td>Start Date</td>
                             <td>End Date</td>
-                            <td>Delete</td>
+                            <td>Action</td>
                         </tr>
-                    </table>
                 </thead>
+            </table>
+            <div style="text-align: center;">
+                <button type="button" id="buttonAdd" class="btn btn-info">Add event predef</button>
+                <button type="button" id="buttonBack" class="btn btn-success">Back to calendar</button>
+            </div>
+           
+            </div>
+        </div>
+    </div>
+
+    <!--Form Add Events Predef-->
+    <div class="modal fade" id="formEventsPredef" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+
+              <div class="modal-header">
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="close"></button>
+                <span aria-hidden="true">x</span>
+              </div>
+              <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group col-12">
+                        <label>Event Predef</label>
+                        <input type="text" id="name" name="name" class="form-control" placeholder="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Text Color</label>
+                    <input type="color" value="#FFFFFF" id="colorT" class="form-control" style="height:36px">
+                </div>
+                <div class="form-group">
+                    <label>Background Color</label>
+                    <input type="color" value="#3788D8" id="colorF" class="form-control" style="height:36px">
+                </div>
+                
+                <div class="form-group">
+                    <label>Start Date</label>
+                    <div class="input-group clockpicker" data-autoclose="true">
+                        <input type="text" id="horaInicio" class="form-control" autocomplete="off">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>End Date</label>
+                    <div class="input-group clockpicker" data-autoclose="true">
+                        <input type="text" id="horaFin" class="form-control" autocomplete="off">
+                    </div>
+                </div>
+              </div> 
+              <div class="modal-footer">
+                <button type="submit" id="buttonconfirm" class="btn btn-success">Confirm</button>
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal">Cancel</button>
+              </div>
+
             </div>
         </div>
     </div>
@@ -45,14 +97,75 @@
 
         document-addEventListener('DOMContentLoaded', function(){
 
+            $('.clockpicker').clockpicker();
             let table1 = $('#table1').DataTable({
               "ajax":{
                  url: 'dataEventsPredef.php?action=list',
-                 dataSrc: "",
+                 dataSrc: ""
                  
-              }  
-            })
-        })
+              },
+              "columns": [{
+                "data": "id"
+              },
+              {
+                "data": "name"
+              },
+              {
+                "data": "text_color"
+              },
+              {
+                "data": "background_color"
+              },
+              {
+                "data": "start_date"
+              },
+              {
+                "data": "end_date"
+              },
+              {
+                "data": null,
+                "orderable": false
+              },
+              
+            ],
+            columnDefs: [{
+                targets: -1,
+                className: 'dt-body-center',
+                "defaultContent": "<button class='btn btn-sm btn-danger botonborrar'> Delete </button>",
+                data: null
+            },
+        {
+            targets: 1,
+            className: 'dt-body-center'
+        },
+        {
+            targets: 2,
+            className: 'dt-body-center' 
+        }],
+        'rowCallback': function(row, data, index){
+            $(row).find('td:eq(1)').css('color', data.text_color);
+            $(row).find('td:eq(1)').css('color', data.background_color);
+        },
+        "languaje":{
+            "url": "datatables/spanish.json"
+        },
+        "lengthMenu": [
+            [10, 25, 50, -1],
+            [10, 25, 50, "Todos"]
+        ],
+
+        });
+        // Button's Events
+
+        $('#buttonAdd').click(function(){
+            $('#formEventsPredef').modal('show');
+        });
+
+        $('#buttonBack').click(function(){
+            window.location = "index.php";
+        });
+
+      });
 
     </script>
 
